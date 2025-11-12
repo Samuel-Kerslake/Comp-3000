@@ -1,0 +1,22 @@
+# Visual Studio cache and temp files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+Debug/
+Release/
+
+# Publish output
+out/
+publish/
+
+# Others
+*.dbmdl
+*.log
+*.vsidx
+*.db
