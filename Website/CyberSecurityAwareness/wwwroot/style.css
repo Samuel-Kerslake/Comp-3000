@@ -1,2 +1,185 @@
-﻿body {
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+/* Body and layout */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    color: #222;
+}
+
+/* Sidebar Menu */
+#sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: auto;
+}
+
+    #sidebar h2 {
+        text-align: center;
+        margin-bottom: 12px;
+        font-size: 20px;
+    }
+
+/* Login icon */
+#loginIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    cursor: pointer;
+    color: #ecf0f1;
+    font-size: 16px;
+}
+
+    #loginIcon .user-icon {
+        font-size: 18px;
+    }
+
+    #loginIcon:hover {
+        opacity: 0.9;
+    }
+
+/* Sidebar links */
+#sidebar ul {
+    list-style: none;
+    margin-top: 8px;
+    padding-left: 0;
+}
+
+    #sidebar ul li {
+        margin: 12px 0;
+    }
+
+        #sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+/* Main Content */
+#content {
+    margin-left: 250px; /* offset for sidebar */
+    padding: 28px;
+    width: 100%;
+}
+
+/* Pages */
+.page {
+    display: none;
+}
+
+    .page.active {
+        display: block;
+    }
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 12px;
+}
+
+/* Forms inside content */
+form {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 10px;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+}
+
+    button:hover {
+        background: #2980b9;
+    }
+
+/* ---------- Modal styling  ---------- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+.modal-box {
+    background: #fff;
+    padding: 22px;
+    width: 360px;
+    border-radius: 6px;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.close-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+    .modal-tabs button {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        background: #eee;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        .modal-tabs button.active {
+            background: #3498db;
+            color: white;
+        }
+
+/* modal forms */
+.modal-form {
+    display: none;
+}
+
+    .modal-form.active {
+        display: block;
+    }
+
+    .modal-form input, .modal-form select, .modal-form button {
+        width: 100%;
+        margin-top: 8px;
+        padding: 8px;
+    }
