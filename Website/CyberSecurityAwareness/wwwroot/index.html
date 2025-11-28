@@ -65,43 +65,56 @@
         </div>
     </div>
 
-    <!-- LOGIN -->
+
+
+    <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-box" role="dialog" aria-modal="true">
-            <button class="close-btn" onclick="closeLoginModal()" aria-label="Close">&times;</button>
+
+            <button class="close-btn" onclick="closeLoginModal()" aria-label="Close" type="button">&times;</button>
 
             <div class="modal-tabs">
-                <button id="loginTab" class="active" onclick="switchModalTab('login')">Login</button>
-                <button id="registerTab" onclick="switchModalTab('register')">Create Account</button>
+                <button id="loginTab" class="active" onclick="switchModalTab('login')" type="button">Login</button>
+                <button id="registerTab" onclick="switchModalTab('register')" type="button">Create Account</button>
             </div>
 
             <div id="loginForm" class="modal-form active">
                 <h2>Login</h2>
+
                 <label>Email</label>
                 <input type="email" id="loginEmail">
+
                 <label>Password</label>
                 <input type="password" id="loginPassword">
-                <button onclick="loginUser()">Login</button>
+
+                <button onclick="loginUser()" type="button">Login</button>
             </div>
 
             <div id="registerForm" class="modal-form">
                 <h2>Create Account</h2>
+
                 <label>Email</label>
                 <input type="email" id="regEmail">
+
                 <label>Password</label>
                 <input type="password" id="regPassword">
+
                 <label>Confirm Password</label>
                 <input type="password" id="regPassword2">
+
                 <label>Job Title</label>
-                <input type="text" id="regJob">
+                <input type="text" id="registerJob">
+
                 <label>Knowledge Level</label>
-                <select id="regKnowledge">
+                <select id="registerKnowledge">
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
                     <option value="advanced">Advanced</option>
                 </select>
-                <button onclick="registerUser()">Create Account</button>
+
+                <button onclick="registerUser()" type="button">Create Account</button>
             </div>
+
         </div>
     </div>
 

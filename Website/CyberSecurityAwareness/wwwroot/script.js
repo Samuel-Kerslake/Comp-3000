@@ -1,4 +1,4 @@
-﻿// Show the page when a tab is clicked
+﻿// Show the appropriate page when a tab is clicked
 function showPage(pageId) {
     const pages = document.querySelectorAll('.page');
     pages.forEach(p => p.classList.remove('active'));
@@ -7,7 +7,7 @@ function showPage(pageId) {
     if (selected) selected.classList.add('active');
 }
 
-// Form submission on Account Info page
+// Form submission on Account Info page (existing)
 function submitForm() {
     const email = document.getElementById('email').value;
     const job = document.getElementById('job').value;
@@ -26,7 +26,7 @@ function openLoginModal() {
     const modal = document.getElementById('loginModal');
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
-    switchModalTab('login'); // login tab
+    switchModalTab('login');
 }
 
 function closeLoginModal() {
@@ -53,7 +53,6 @@ function switchModalTab(tab) {
 function loginUser() {
     const email = document.getElementById('loginEmail').value;
     const pass = document.getElementById('loginPassword').value;
-    // placeholder - replace with real auth later
     alert('Login attempt for: ' + (email || '(no email)'));
     closeLoginModal();
 }
@@ -62,17 +61,33 @@ function registerUser() {
     const email = document.getElementById('regEmail').value;
     const pass = document.getElementById('regPassword').value;
     const pass2 = document.getElementById('regPassword2').value;
-    if (!email || !pass) { alert('Please provide email and password'); return; }
-    if (pass !== pass2) { alert('Passwords do not match'); return; }
+
+    if (!email || !pass) {
+        alert('Please provide email and password');
+        return;
+    }
+
+    if (pass !== pass2) {
+        alert('Passwords do not match');
+        return;
+    }
+
     alert('Account created for: ' + email);
     closeLoginModal();
 }
 
-//close modal when clicking outside the box
+// Close modal when clicking outside the box
 document.addEventListener('click', function (e) {
     const modal = document.getElementById('loginModal');
-    if (!modal) return;
-    if (!modal.classList.contains('active')) return;
+    if (!modal || !modal.classList.contains('active')) return;
+
+    // prevent close when clicking login icon
+    if (e.target.id === "loginIcon" || e.target.closest('#loginIcon')) return;
+
     const box = modal.querySelector('.modal-box');
-    if (!box.contains(e.target)) closeLoginModal();
+
+    // prevent close when clicking inside the modal 
+    if (e.target.closest('.modal-box')) return;
+
+    closeLoginModal();
 });

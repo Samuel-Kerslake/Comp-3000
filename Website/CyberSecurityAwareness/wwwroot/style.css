@@ -90,7 +90,7 @@ h1 {
     margin-bottom: 12px;
 }
 
-/* Forms inside content */
+/* Content forms */
 form {
     width: 100%;
     max-width: 600px;
@@ -115,7 +115,9 @@ button {
         background: #2980b9;
     }
 
-/* ---------- Modal styling  ---------- */
+
+
+/* Background overlay */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -123,63 +125,104 @@ button {
     background: rgba(0,0,0,0.55);
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 9999;
 }
 
     .modal-overlay.active {
         display: flex;
     }
 
+/* Modal box */
 .modal-box {
     background: #fff;
-    padding: 22px;
+    padding: 20px;
     width: 360px;
-    border-radius: 6px;
+    border-radius: 10px;
     position: relative;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    animation: fadeIn 0.25s ease-in-out;
 }
 
+/* Close button */
 .close-btn {
     position: absolute;
-    top: 8px;
-    right: 10px;
-    font-size: 20px;
-    background: transparent;
-    border: none;
+    top: 6px;
+    right: 6px;
+    font-size: 18px;
+    padding: 3px;
+    line-height: 1;
     cursor: pointer;
+    background: none;
+    border: none;
+    z-index: 10000;
 }
 
+/* Tabs */
 .modal-tabs {
     display: flex;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-top: 25px; 
+    margin-bottom: 18px;
 }
 
     .modal-tabs button {
         flex: 1;
-        padding: 8px;
+        padding: 10px;
         border: none;
-        background: #eee;
+        background: #e0e0e0;
         cursor: pointer;
-        border-radius: 4px;
+        font-size: 15px;
+        border-radius: 6px;
+        transition: 0.15s;
     }
 
+        /* Selected tab */
         .modal-tabs button.active {
             background: #3498db;
             color: white;
         }
 
-/* modal forms */
+/* Form sections */
 .modal-form {
     display: none;
 }
 
     .modal-form.active {
-        display: block;
+        display: flex;
+        flex-direction: column;
     }
 
-    .modal-form input, .modal-form select, .modal-form button {
+    .modal-form input,
+    .modal-form select,
+    .modal-form button {
         width: 100%;
-        margin-top: 8px;
-        padding: 8px;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #bbb;
     }
+
+    .modal-form button {
+        background: #3498db;
+        border: none;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .modal-form button:hover {
+            background: #2980b9;
+        }
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
