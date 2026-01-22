@@ -61,7 +61,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC1KivyeCMDdOcnba-JGVN93A53luH0NIU",
+    apiKey: "",
     authDomain: "comp-3000-cyber-security-aware.firebaseapp.com",
     projectId: "comp-3000-cyber-security-aware",
     storageBucket: "comp-3000-cyber-security-aware.firebasestorage.app",
