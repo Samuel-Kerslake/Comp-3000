@@ -5,6 +5,87 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Cybersecurity Awareness</title>
     <link rel="stylesheet" href="/style.css">
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1KivyeCMDdOcnba-JGVN93A53luH0NIU",
+            authDomain: "comp-3000-cyber-security-aware.firebaseapp.com",
+            projectId: "comp-3000-cyber-security-aware",
+            storageBucket: "comp-3000-cyber-security-aware.firebasestorage.app",
+            messagingSenderId: "523744636201",
+            appId: "1:523744636201:web:eca59074e537f60f221b38"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+       
+        // Firebase Auth functions
+       
+        window.registerUser = async function () {
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const password2 = document.getElementById('regPassword2').value;
+
+            if (password !== password2) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert("User registered successfully!");
+                closeLoginModal();
+            } catch (err) {
+                alert(err.message);
+                console.error(err);
+            }
+        }
+
+        window.loginUser = async function () {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("Login successful!");
+                closeLoginModal();
+            } catch (err) {
+                alert(err.message);
+                console.error(err);
+            }
+        }
+
+       
+        // Firebase Firestore content loading
+      
+        window.loadPageContent = async function (pageId) {
+            try {
+                const pageRef = doc(db, "pages", pageId);
+                const pageSnap = await getDoc(pageRef);
+
+                if (pageSnap.exists()) {
+                    const data = pageSnap.data();
+                    const container = document.getElementById(pageId);
+                    container.innerHTML = `<h1>${data.title}</h1><p>${data.content}</p>`;
+                } else {
+                    console.log("No content for page:", pageId);
+                }
+            } catch (err) {
+                console.error("Error fetching page:", err);
+            }
+        }
+
+        // Load all pages automatically
+        ['home', 'phishing', 'dataProtection'].forEach(id => loadPageContent(id));
+    </script>
 </head>
 <body>
 
@@ -28,20 +109,9 @@
 
     <!-- Main Content -->
     <div id="content">
-        <div id="home" class="page active">
-            <h1>Welcome to Cybersecurity Awareness</h1>
-            <p>Learn about the latest cybersecurity threats and how to protect yourself online.</p>
-        </div>
-
-        <div id="phishing" class="page">
-            <h1>What is Phishing?</h1>
-            <p>Phishing is a type of cyber attack where attackers try to trick you into revealing sensitive information.</p>
-        </div>
-
-        <div id="dataProtection" class="page">
-            <h1>Data Protection</h1>
-            <p>Learn best practices to avoid data breaches.</p>
-        </div>
+        <div id="home" class="page active"></div>
+        <div id="phishing" class="page"></div>
+        <div id="dataProtection" class="page"></div>
 
         <div id="accountInfo" class="page">
             <h1>Account Information</h1>
@@ -65,12 +135,9 @@
         </div>
     </div>
 
-
-
     <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-box" role="dialog" aria-modal="true">
-
             <button class="close-btn" onclick="closeLoginModal()" aria-label="Close" type="button">&times;</button>
 
             <div class="modal-tabs">
@@ -80,44 +147,34 @@
 
             <div id="loginForm" class="modal-form active">
                 <h2>Login</h2>
-
                 <label>Email</label>
                 <input type="email" id="loginEmail">
-
                 <label>Password</label>
                 <input type="password" id="loginPassword">
-
                 <button onclick="loginUser()" type="button">Login</button>
             </div>
 
             <div id="registerForm" class="modal-form">
                 <h2>Create Account</h2>
-
                 <label>Email</label>
                 <input type="email" id="regEmail">
-
                 <label>Password</label>
                 <input type="password" id="regPassword">
-
                 <label>Confirm Password</label>
                 <input type="password" id="regPassword2">
-
                 <label>Job Title</label>
                 <input type="text" id="registerJob">
-
                 <label>Knowledge Level</label>
                 <select id="registerKnowledge">
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
                     <option value="advanced">Advanced</option>
                 </select>
-
                 <button onclick="registerUser()" type="button">Create Account</button>
             </div>
-
         </div>
     </div>
 
-    <script src="/script.js"></script>
+    <script type="module" src="/script.js"></script>
 </body>
 </html>
