@@ -5,87 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Cybersecurity Awareness</title>
     <link rel="stylesheet" href="/style.css">
-
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1KivyeCMDdOcnba-JGVN93A53luH0NIU",
-            authDomain: "comp-3000-cyber-security-aware.firebaseapp.com",
-            projectId: "comp-3000-cyber-security-aware",
-            storageBucket: "comp-3000-cyber-security-aware.firebasestorage.app",
-            messagingSenderId: "523744636201",
-            appId: "1:523744636201:web:eca59074e537f60f221b38"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-       
-        // Firebase Auth functions
-       
-        window.registerUser = async function () {
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const password2 = document.getElementById('regPassword2').value;
-
-            if (password !== password2) {
-                alert("Passwords do not match");
-                return;
-            }
-
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert("User registered successfully!");
-                closeLoginModal();
-            } catch (err) {
-                alert(err.message);
-                console.error(err);
-            }
-        }
-
-        window.loginUser = async function () {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                alert("Login successful!");
-                closeLoginModal();
-            } catch (err) {
-                alert(err.message);
-                console.error(err);
-            }
-        }
-
-       
-        // Firebase Firestore content loading
-      
-        window.loadPageContent = async function (pageId) {
-            try {
-                const pageRef = doc(db, "pages", pageId);
-                const pageSnap = await getDoc(pageRef);
-
-                if (pageSnap.exists()) {
-                    const data = pageSnap.data();
-                    const container = document.getElementById(pageId);
-                    container.innerHTML = `<h1>${data.title}</h1><p>${data.content}</p>`;
-                } else {
-                    console.log("No content for page:", pageId);
-                }
-            } catch (err) {
-                console.error("Error fetching page:", err);
-            }
-        }
-
-        // Load all pages automatically
-        ['home', 'phishing', 'dataProtection'].forEach(id => loadPageContent(id));
-    </script>
 </head>
 <body>
 
@@ -175,6 +94,7 @@
         </div>
     </div>
 
+    <!-- Firebase + logic file -->
     <script type="module" src="/script.js"></script>
 </body>
 </html>

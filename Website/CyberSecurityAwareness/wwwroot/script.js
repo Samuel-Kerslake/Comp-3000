@@ -1,42 +1,44 @@
-﻿//  Page Navigation 
-function showPage(pageId) {
+﻿// Page Navigation
+window.showPage = function (pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const selected = document.getElementById(pageId);
     if (selected) selected.classList.add('active');
-}
+};
 
-//Account Form 
-function submitForm() {
+// Account Form
+window.submitForm = function () {
     const email = document.getElementById('email').value;
     const job = document.getElementById('job').value;
     const knowledge = document.getElementById('knowledge').value;
+
     document.getElementById('formResult').innerHTML = `
         <h3>Thank you for submitting your info!</h3>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Job:</strong> ${job}</p>
         <p><strong>Knowledge:</strong> ${knowledge}</p>
     `;
-}
+};
 
 // Modal Controls
-function openLoginModal() {
+window.openLoginModal = function () {
     const modal = document.getElementById('loginModal');
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     switchModalTab('login');
-}
+};
 
-function closeLoginModal() {
+window.closeLoginModal = function () {
     const modal = document.getElementById('loginModal');
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
-}
+};
 
-function switchModalTab(tab) {
+window.switchModalTab = function (tab) {
     document.getElementById('loginForm').classList.remove('active');
     document.getElementById('registerForm').classList.remove('active');
     document.getElementById('loginTab').classList.remove('active');
     document.getElementById('registerTab').classList.remove('active');
+
     if (tab === 'login') {
         document.getElementById('loginForm').classList.add('active');
         document.getElementById('loginTab').classList.add('active');
@@ -44,16 +46,7 @@ function switchModalTab(tab) {
         document.getElementById('registerForm').classList.add('active');
         document.getElementById('registerTab').classList.add('active');
     }
-}
-
-// Close modal if clicking outside
-document.addEventListener('click', function (e) {
-    const modal = document.getElementById('loginModal');
-    if (!modal || !modal.classList.contains('active')) return;
-    if (e.target.id === "loginIcon" || e.target.closest('#loginIcon')) return;
-    if (e.target.closest('.modal-box')) return;
-    closeLoginModal();
-});
+};
 
 // Firebase Setup 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
