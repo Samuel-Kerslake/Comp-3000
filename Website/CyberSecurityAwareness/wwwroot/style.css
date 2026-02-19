@@ -161,7 +161,7 @@ button {
 .modal-tabs {
     display: flex;
     gap: 8px;
-    margin-top: 25px; 
+    margin-top: 25px;
     margin-bottom: 18px;
 }
 
@@ -225,4 +225,38 @@ button {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+body {
+    margin: 0;
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+#sidebar {
+    width: 250px;
+    background: #1f2937;
+    color: white;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+#sidebarLinks {
+    list-style: none;
+    padding: 0;
+}
+
+    #sidebarLinks li {
+        margin-bottom: 10px;
+    }
+
+    #sidebarLinks a {
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+#content {
+    flex: 1;
+    padding: 40px;
 }

@@ -1,9 +1,20 @@
-﻿// Page Navigation
-window.showPage = function (pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const selected = document.getElementById(pageId);
-    if (selected) selected.classList.add('active');
-};
+﻿function showPage(pdfFile) {
+    const content = document.getElementById("content");
+
+    if (!pdfFile) {
+        content.innerHTML = "<p>No PDF specified.</p>";
+        return;
+    }
+
+    content.innerHTML = `
+        <iframe 
+            src="/pdfs/${pdfFile}" 
+            width="100%" 
+            height="800px"
+            style="border:none;">
+        </iframe>
+    `;
+}
 
 // Account Form
 window.submitForm = function () {
@@ -51,10 +62,11 @@ window.switchModalTab = function (tab) {
 // Firebase Setup 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
 const firebaseConfig = {
-    apiKey: "",
+    apiKey: "AIzaSyC1KivyeCMDdOcnba-JGVN93A53luH0NIU",
     authDomain: "comp-3000-cyber-security-aware.firebaseapp.com",
     projectId: "comp-3000-cyber-security-aware",
     storageBucket: "comp-3000-cyber-security-aware.firebasestorage.app",
@@ -65,6 +77,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Auth Functions
 window.registerUser = async function () {
@@ -79,23 +92,52 @@ window.registerUser = async function () {
 window.loginUser = async function () {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    try { await signInWithEmailAndPassword(auth, email, password); alert("Login successful!"); closeLoginModal(); }
-    catch (err) { alert(err.message); console.error(err); }
-}
 
-//  Load Firestore Pages 
-window.loadPageContent = async function (pageId) {
     try {
-        const pageRef = doc(db, "pages", pageId);
-        const pageSnap = await getDoc(pageRef);
-        if (pageSnap.exists()) {
-            const data = pageSnap.data();
-            document.getElementById(pageId).innerHTML = `<h1>${data.title}</h1><p>${data.content}</p>`;
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Login successful!");
+        closeLoginModal();
+    } catch (err) { alert(err.message); console.error(err); }
+};
+
+// Load pages dynamically (titles from Firestore, PDFs locally)
+async function loadAllPages() {
+    const sidebar = document.getElementById("sidebarLinks");
+    const content = document.getElementById("content");
+    if (!sidebar || !content) return;
+
+    sidebar.innerHTML = "";
+    content.innerHTML = "";
+
+    try {
+        const snapshot = await getDocs(collection(db, "pages"));
+
+        if (snapshot.empty) {
+            content.innerHTML = "<p>No pages found.</p>";
+            return;
         }
-    } catch (err) { console.error(err); }
+
+        let firstPage = null;
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+
+            const link = document.createElement("li");
+            link.innerHTML = `<a href="#">${data.title}</a>`;
+            link.onclick = () => showPage(data.pdf);
+
+            sidebar.appendChild(link);
+
+            if (!firstPage) firstPage = data.pdf;
+        });
+
+        if (firstPage) showPage(firstPage);
+
+    } catch (err) {
+        console.error("Firestore error:", err);
+        content.innerHTML = "<p>Error loading pages.</p>";
+    }
 }
 
-// Load pages after DOM ready
-window.addEventListener('DOMContentLoaded', () => {
-    ['home', 'phishing', 'dataProtection'].forEach(id => loadPageContent(id));
-});
+// Initialize after DOM ready
+window.addEventListener('DOMContentLoaded', loadAllPages);
