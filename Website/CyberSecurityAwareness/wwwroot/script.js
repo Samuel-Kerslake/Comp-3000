@@ -3,7 +3,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
@@ -81,7 +81,8 @@ async function ensureUserDoc(user) {
             difficulty: "beginner",
             completedPages: [],
             fontSize: 16,
-            highContrast: false
+            highContrast: false,
+            reduceMotion: false
         });
     }
 
@@ -100,6 +101,16 @@ async function showPage(pageTitle, pdfFile) {
 
         const userData = await ensureUserDoc(user);
         renderDashboard(userData);
+        return;
+    }
+
+    if (pageTitle === "Account") {
+        openAccountPage();
+        return;
+    }
+
+    if (pageTitle === "Settings") {
+        openSettingsPage();
         return;
     }
 
@@ -276,7 +287,8 @@ window.registerUser = async function () {
             difficulty: document.getElementById("registerKnowledge").value || "beginner",
             completedPages: [],
             fontSize: 16,
-            highContrast: false
+            highContrast: false,
+            reduceMotion: false
         });
         alert("User registered!");
         closeLoginModal();
@@ -298,6 +310,132 @@ window.loginUser = async function () {
         alert(err.message);
         console.error(err);
     }
+};
+
+async function changePassword() {
+    const user = auth.currentUser;
+    const newPassword = document.getElementById("newPassword").value;
+
+    if (!user) {
+        alert("You need to be logged in to change your password.");
+        return;
+    }
+
+    if (!newPassword) {
+        alert("Please enter a new password.");
+        return;
+    }
+
+    try {
+        await updatePassword(user, newPassword);
+        alert("Password updated successfully.");
+        document.getElementById("newPassword").value = "";
+    } catch (err) {
+        console.error(err);
+        alert("Could not update password. You may need to log in again.");
+    }
+}
+
+async function saveAccessibilitySettings() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const fontSizeValue = parseInt(document.getElementById("fontSizeSelect").value, 10);
+
+    try {
+        await setDoc(doc(db, "users", user.uid), {
+            highContrast: document.getElementById("highContrastToggle").checked,
+            reduceMotion: document.getElementById("reduceMotionToggle").checked,
+            fontSize: fontSizeValue
+        }, { merge: true });
+    } catch (err) {
+        console.error("Failed to save accessibility settings:", err);
+    }
+}
+
+window.openAccountPage = async function () {
+    const content = document.getElementById("content");
+    const user = auth.currentUser;
+
+    if (!content) return;
+
+    if (!user) {
+        content.innerHTML = `
+            <div class="account-page">
+                <h1>Account</h1>
+                <p>You need to log in to access account settings.</p>
+                <button type="button" onclick="openLoginModal()">Log in</button>
+            </div>
+        `;
+        return;
+    }
+
+    const userData = await ensureUserDoc(user);
+
+    content.innerHTML = `
+        <div class="account-page">
+            <h1>Account</h1>
+
+            <div>
+                <h2>Change Password</h2>
+                <input type="password" id="newPassword" placeholder="New password">
+                <button type="button" id="changePasswordBtn">Change Password</button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("changePasswordBtn")?.addEventListener("click", changePassword);
+};
+
+window.openSettingsPage = async function () {
+    const content = document.getElementById("content");
+    const user = auth.currentUser;
+
+    if (!content) return;
+
+    if (!user) {
+        content.innerHTML = `
+            <div class="account-page">
+                <h1>Settings</h1>
+                <p>You need to log in to access settings.</p>
+                <button type="button" onclick="openLoginModal()">Log in</button>
+            </div>
+        `;
+        return;
+    }
+
+    const userData = await ensureUserDoc(user);
+
+    content.innerHTML = `
+        <div class="account-page">
+            <h1>Settings</h1>
+
+            <div>
+                <h2>Accessibility Settings</h2>
+
+                <label>
+                    <input type="checkbox" id="highContrastToggle" ${userData.highContrast ? "checked" : ""}>
+                    High contrast mode
+                </label>
+
+                <label>
+                    <input type="checkbox" id="reduceMotionToggle" ${userData.reduceMotion ? "checked" : ""}>
+                    Reduce motion
+                </label>
+
+                <label for="fontSizeSelect">Text size</label>
+                <select id="fontSizeSelect">
+                    <option value="14" ${userData.fontSize == 14 ? "selected" : ""}>Small</option>
+                    <option value="16" ${userData.fontSize == 16 ? "selected" : ""}>Medium</option>
+                    <option value="18" ${userData.fontSize == 18 ? "selected" : ""}>Large</option>
+                </select>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("highContrastToggle")?.addEventListener("change", saveAccessibilitySettings);
+    document.getElementById("reduceMotionToggle")?.addEventListener("change", saveAccessibilitySettings);
+    document.getElementById("fontSizeSelect")?.addEventListener("change", saveAccessibilitySettings);
 };
 
 async function loadAllPages() {
@@ -349,10 +487,27 @@ async function loadAllPages() {
     }
 }
 
-window.addEventListener('DOMContentLoaded', loadAllPages);
+window.addEventListener("DOMContentLoaded", () => {
+    loadAllPages();
+
+    const accountBtn = document.getElementById("accountSettingsBtn");
+    if (accountBtn) {
+        accountBtn.addEventListener("click", openAccountPage);
+    }
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    if (settingsBtn) {
+        settingsBtn.addEventListener("click", openSettingsPage);
+    }
+});
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         await ensureUserDoc(user);
+    } else {
+        const content = document.getElementById("content");
+        if (content && content.innerHTML.includes("Account") || content && content.innerHTML.includes("Settings")) {
+            content.innerHTML = "<p>Please log in to access account or settings.</p>";
+        }
     }
 });
