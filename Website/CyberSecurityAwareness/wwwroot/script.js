@@ -34,6 +34,50 @@ window.submitForm = function () {
     `;
 };
 
+function applyAccessibilitySettings(settings) {
+    document.documentElement.style.fontSize = `${settings.fontSize || 16}px`;
+    document.body.classList.toggle("high-contrast", !!settings.highContrast);
+    document.body.classList.toggle("reduce-motion", !!settings.reduceMotion);
+}
+
+async function loadAccessibilitySettings(user) {
+    const ref = doc(db, "users", user.uid);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+        return {
+            highContrast: false,
+            reduceMotion: false,
+            fontSize: 16
+        };
+    }
+
+    const data = snap.data();
+    return {
+        highContrast: !!data.highContrast,
+        reduceMotion: !!data.reduceMotion,
+        fontSize: data.fontSize || 16
+    };
+}
+
+async function saveAccessibilitySettings() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const settings = {
+        highContrast: document.getElementById("highContrastToggle").checked,
+        reduceMotion: document.getElementById("reduceMotionToggle").checked,
+        fontSize: parseInt(document.getElementById("fontSizeSelect").value, 10)
+    };
+
+    try {
+        await setDoc(doc(db, "users", user.uid), settings, { merge: true });
+        applyAccessibilitySettings(settings);
+    } catch (err) {
+        console.error("Failed to save accessibility settings:", err);
+    }
+}
+
 function renderDashboard(userData) {
     const content = document.getElementById("content");
     const completed = userData?.completedPages?.length || 0;
@@ -100,6 +144,8 @@ async function showPage(pageTitle, pdfFile) {
         }
 
         const userData = await ensureUserDoc(user);
+        const settings = await loadAccessibilitySettings(user);
+        applyAccessibilitySettings(settings);
         renderDashboard(userData);
         return;
     }
@@ -336,23 +382,6 @@ async function changePassword() {
     }
 }
 
-async function saveAccessibilitySettings() {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const fontSizeValue = parseInt(document.getElementById("fontSizeSelect").value, 10);
-
-    try {
-        await setDoc(doc(db, "users", user.uid), {
-            highContrast: document.getElementById("highContrastToggle").checked,
-            reduceMotion: document.getElementById("reduceMotionToggle").checked,
-            fontSize: fontSizeValue
-        }, { merge: true });
-    } catch (err) {
-        console.error("Failed to save accessibility settings:", err);
-    }
-}
-
 window.openAccountPage = async function () {
     const content = document.getElementById("content");
     const user = auth.currentUser;
@@ -370,7 +399,7 @@ window.openAccountPage = async function () {
         return;
     }
 
-    const userData = await ensureUserDoc(user);
+    await ensureUserDoc(user);
 
     content.innerHTML = `
         <div class="account-page">
@@ -404,7 +433,7 @@ window.openSettingsPage = async function () {
         return;
     }
 
-    const userData = await ensureUserDoc(user);
+    const settings = await loadAccessibilitySettings(user);
 
     content.innerHTML = `
         <div class="account-page">
@@ -414,20 +443,20 @@ window.openSettingsPage = async function () {
                 <h2>Accessibility Settings</h2>
 
                 <label>
-                    <input type="checkbox" id="highContrastToggle" ${userData.highContrast ? "checked" : ""}>
+                    <input type="checkbox" id="highContrastToggle" ${settings.highContrast ? "checked" : ""}>
                     High contrast mode
                 </label>
 
                 <label>
-                    <input type="checkbox" id="reduceMotionToggle" ${userData.reduceMotion ? "checked" : ""}>
+                    <input type="checkbox" id="reduceMotionToggle" ${settings.reduceMotion ? "checked" : ""}>
                     Reduce motion
                 </label>
 
                 <label for="fontSizeSelect">Text size</label>
                 <select id="fontSizeSelect">
-                    <option value="14" ${userData.fontSize == 14 ? "selected" : ""}>Small</option>
-                    <option value="16" ${userData.fontSize == 16 ? "selected" : ""}>Medium</option>
-                    <option value="18" ${userData.fontSize == 18 ? "selected" : ""}>Large</option>
+                    <option value="14" ${settings.fontSize == 14 ? "selected" : ""}>Small</option>
+                    <option value="16" ${settings.fontSize == 16 ? "selected" : ""}>Medium</option>
+                    <option value="18" ${settings.fontSize == 18 ? "selected" : ""}>Large</option>
                 </select>
             </div>
         </div>
@@ -436,6 +465,7 @@ window.openSettingsPage = async function () {
     document.getElementById("highContrastToggle")?.addEventListener("change", saveAccessibilitySettings);
     document.getElementById("reduceMotionToggle")?.addEventListener("change", saveAccessibilitySettings);
     document.getElementById("fontSizeSelect")?.addEventListener("change", saveAccessibilitySettings);
+    applyAccessibilitySettings(settings);
 };
 
 async function loadAllPages() {
@@ -504,9 +534,11 @@ window.addEventListener("DOMContentLoaded", () => {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         await ensureUserDoc(user);
+        const settings = await loadAccessibilitySettings(user);
+        applyAccessibilitySettings(settings);
     } else {
         const content = document.getElementById("content");
-        if (content && content.innerHTML.includes("Account") || content && content.innerHTML.includes("Settings")) {
+        if (content && (content.innerHTML.includes("Account") || content.innerHTML.includes("Settings"))) {
             content.innerHTML = "<p>Please log in to access account or settings.</p>";
         }
     }

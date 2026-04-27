@@ -395,36 +395,28 @@ button {
             transform: translateY(-1px);
         }
 
-        #sidebarBottom button:focus {
-            outline: 2px solid #60a5fa;
+        #sidebarBottom button:focus-visible {
+            outline: 3px solid #60a5fa;
             outline-offset: 2px;
         }
 
-.account-page {
+.account-page,
+.settings-page {
     max-width: 900px;
     margin: 0 auto;
     padding: 8px 0 24px;
 }
 
-    .account-page h1 {
+    .account-page h1,
+    .settings-page h1 {
         font-size: 2rem;
         margin-bottom: 18px;
         color: #0f172a;
         letter-spacing: -0.02em;
     }
 
-    .account-page h2 {
-        font-size: 1.15rem;
-        margin-bottom: 12px;
-        color: #111827;
-    }
-
-    .account-page p {
-        color: #334155;
-        margin-bottom: 16px;
-    }
-
-    .account-page > div {
+    .account-page > div,
+    .settings-page > div {
         background: #fff;
         border: 1px solid #e5e7eb;
         border-radius: 16px;
@@ -433,9 +425,25 @@ button {
         margin-bottom: 18px;
     }
 
+    .account-page h2,
+    .settings-page h2 {
+        font-size: 1.15rem;
+        margin-bottom: 12px;
+        color: #111827;
+    }
+
+    .account-page p,
+    .settings-page p {
+        color: #334155;
+        margin-bottom: 16px;
+    }
+
     .account-page input[type="password"],
     .account-page input[type="text"],
-    .account-page select {
+    .account-page select,
+    .settings-page input[type="password"],
+    .settings-page input[type="text"],
+    .settings-page select {
         width: 100%;
         margin-top: 8px;
         margin-bottom: 14px;
@@ -446,7 +454,8 @@ button {
         color: #0f172a;
     }
 
-    .account-page label {
+    .account-page label,
+    .settings-page label {
         display: block;
         margin-top: 10px;
         margin-bottom: 6px;
@@ -454,12 +463,14 @@ button {
         font-weight: 600;
     }
 
-    .account-page input[type="checkbox"] {
+    .account-page input[type="checkbox"],
+    .settings-page input[type="checkbox"] {
         width: auto;
         margin-right: 10px;
     }
 
-    .account-page button {
+    .account-page button,
+    .settings-page button {
         width: auto;
         padding: 12px 16px;
         border: none;
@@ -471,7 +482,106 @@ button {
         transition: background 0.2s ease, transform 0.2s ease;
     }
 
-        .account-page button:hover {
+        .account-page button:hover,
+        .settings-page button:hover {
             background: #1d4ed8;
             transform: translateY(-1px);
         }
+
+.high-contrast {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+    .high-contrast #content,
+    .high-contrast .pdf-document,
+    .high-contrast .dashboard-card,
+    .high-contrast .account-page > div,
+    .high-contrast .settings-page > div {
+        background: #000 !important;
+        color: #fff !important;
+        border-color: #fff !important;
+        box-shadow: none !important;
+    }
+
+    .high-contrast a,
+    .high-contrast button,
+    .high-contrast h1,
+    .high-contrast h2,
+    .high-contrast h3,
+    .high-contrast p,
+    .high-contrast label,
+    .high-contrast span {
+        color: #fff !important;
+    }
+
+    .high-contrast #sidebar {
+        background: #000 !important;
+        border-right: 2px solid #fff;
+    }
+
+    .high-contrast #sidebarBottom button {
+        background: #222 !important;
+        color: #fff !important;
+        border: 1px solid #fff;
+    }
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+}
+
+.high-contrast .modal-overlay {
+    background: rgba(0, 0, 0, 0.92) !important;
+}
+
+.high-contrast .modal-box {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+    box-shadow: none !important;
+}
+
+    .high-contrast .modal-box h2,
+    .high-contrast .modal-box h3,
+    .high-contrast .modal-box p,
+    .high-contrast .modal-box label,
+    .high-contrast .modal-box span {
+        color: #fff !important;
+    }
+
+    .high-contrast .modal-box input,
+    .high-contrast .modal-box select {
+        background: #111 !important;
+        color: #fff !important;
+        border: 1px solid #fff !important;
+    }
+
+        .high-contrast .modal-box input::placeholder {
+            color: #d1d5db !important;
+        }
+
+.high-contrast .modal-tabs button {
+    background: #1f2937 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+    .high-contrast .modal-tabs button.active {
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+.high-contrast .modal-form button {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #fff !important;
+}
+
+.high-contrast .close-btn {
+    color: #fff !important;
+}
