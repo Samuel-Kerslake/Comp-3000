@@ -9,6 +9,7 @@
 <body>
 
     <div id="sidebar">
+
         <h2>Cybersecurity Awareness</h2>
 
         <div id="loginIcon" onclick="openLoginModal()" title="Login">
@@ -20,59 +21,17 @@
             <!-- Pages load dynamically -->
         </ul>
 
-        <div id="sidebarBottom">
-            <button id="settingsBtn" type="button">
-                Settings
-            </button>
-            <button id="accountSettingsBtn" type="button">
-                Account
-            </button>
-        </div>
     </div>
 
+
+
+
+    <!-- Main Content -->
     <div id="content">
         <!-- Pages load dynamically -->
     </div>
 
-    <!-- Dashboard loads only if dashboard page is open -->
-    <div id="dashboardTemplate" style="display:none;">
-        <div class="dashboard">
-            <h1>Dashboard</h1>
-
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <h3>Current Level</h3>
-                    <p id="dashLevel">Guest</p>
-                </div>
-
-                <div class="dashboard-card">
-                    <h3>Progress</h3>
-                    <div class="progress-bar">
-                        <div id="progressFill" class="progress-fill"></div>
-                    </div>
-                    <p id="progressText">0% complete</p>
-                </div>
-
-                <div class="dashboard-card">
-                    <h3>Lessons Completed</h3>
-                    <p id="lessonsCompleted">0</p>
-                </div>
-
-                <div class="dashboard-card">
-                    <h3>Accessibility</h3>
-                    <p id="accessText">Default</p>
-                </div>
-            </div>
-
-            <div class="dashboard-card" style="margin-top:20px;">
-                <h3>Recommended for you</h3>
-                <div id="recommendations">
-                    <p>Log in to see recommendations.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-box" role="dialog" aria-modal="true">
             <button class="close-btn" onclick="closeLoginModal()" aria-label="Close" type="button">&times;</button>
@@ -112,6 +71,7 @@
         </div>
     </div>
 
+    <!-- Firebase + logic file -->
     <script type="module" src="/script.js"></script>
 </body>
 </html>
